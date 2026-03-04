@@ -32,6 +32,8 @@ interface MessageRepository {
 
     fun getMessage(id: Long): Message?
 
+    fun updateMessageCategory(id: Long, category: Message.MessageCategory)
+
     fun getMessageForPart(id: Long): Message?
 
     fun getLastIncomingMessage(threadId: Long): RealmResults<Message>

@@ -19,6 +19,7 @@
 package org.prauga.messages.interactor
 
 import org.prauga.messages.blocking.BlockingClient
+import org.prauga.messages.categorization.CategorizationEngine
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.manager.ShortcutManager
@@ -40,12 +41,19 @@ class ReceiveSms @Inject constructor(
     private val updateBadge: UpdateBadge,
     private val shortcutManager: ShortcutManager,
     private val filterRepo: MessageContentFilterRepository,
-    private val contactsRepo: ContactRepository
+    private val contactsRepo: ContactRepository,
+    private val categorizationEngine: CategorizationEngine
 ) : Interactor<Long>() {
 
     override fun buildObservable(params: Long): Flowable<*> {
         return Flowable.just(params)
             .mapNotNull { messageRepo.getMessage(it) }
+            .doOnNext { message ->
+                // Categorize the message
+                val category = categorizationEngine.categorize(message.address, message.body)
+                Timber.d("Message ${message.id} categorized as $category")
+                messageRepo.updateMessageCategory(message.id, category)
+            }
             .mapNotNull {
                 val action = blockingClient.shouldBlock(it.address).blockingGet()
 

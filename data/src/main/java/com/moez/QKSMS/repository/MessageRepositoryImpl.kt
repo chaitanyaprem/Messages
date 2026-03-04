@@ -1104,6 +1104,15 @@ open class MessageRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun updateMessageCategory(id: Long, category: Message.MessageCategory) {
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                val message = it.where(Message::class.java).equalTo("id", id).findFirst()
+                message?.category = category
+            }
+        }
+    }
+
     override fun getOldMessageCounts(maxAgeDays: Int) =
         Realm.getDefaultInstance().use { realm ->
             realm.where(Message::class.java)

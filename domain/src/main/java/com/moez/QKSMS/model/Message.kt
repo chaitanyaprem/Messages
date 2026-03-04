@@ -32,6 +32,7 @@ import org.prauga.messages.extensions.joinTo
 open class Message : RealmObject() {
 
     enum class AttachmentType { TEXT, IMAGE, VIDEO, AUDIO, SLIDESHOW, NOT_LOADED }
+    enum class MessageCategory { PERSONAL, TRANSACTIONAL, PROMOTIONAL, OTP, UNKNOWN }
 
     @PrimaryKey
     var id: Long = 0
@@ -53,6 +54,12 @@ open class Message : RealmObject() {
     var read: Boolean = false
     var locked: Boolean = false
     var subId: Int = -1
+    var categoryString: String = MessageCategory.UNKNOWN.toString()
+    var category: MessageCategory
+        get() = MessageCategory.valueOf(categoryString)
+        set(value) {
+            categoryString = value.toString()
+        }
 
     // SMS only
     var body: String = ""

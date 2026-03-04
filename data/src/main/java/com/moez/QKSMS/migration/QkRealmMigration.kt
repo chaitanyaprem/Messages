@@ -36,7 +36,7 @@ class QkRealmMigration @Inject constructor(
 ) : RealmMigration {
 
     companion object {
-        const val SchemaVersion: Long = 14
+        const val SchemaVersion: Long = 15
     }
 
     @SuppressLint("ApplySharedPref")
@@ -277,6 +277,15 @@ class QkRealmMigration @Inject constructor(
 
             realm.createObject("EmojiSyncNeeded")
 
+            version++
+        }
+
+        if (version == 14L) {
+            realm.schema.get("Message")
+                ?.addField("categoryString", String::class.java, FieldAttribute.REQUIRED)
+                ?.transform { obj ->
+                    obj.setString("categoryString", "UNKNOWN")
+                }
             version++
         }
 
