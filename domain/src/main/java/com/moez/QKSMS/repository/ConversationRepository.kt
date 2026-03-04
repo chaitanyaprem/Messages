@@ -19,6 +19,7 @@
 package org.prauga.messages.repository
 
 import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchResult
 import io.reactivex.Completable
@@ -30,7 +31,8 @@ interface ConversationRepository {
     fun getConversations(
         unreadAtTop: Boolean,
         archived: Boolean = false,
-        onlyUnread: Boolean = false
+        onlyUnread: Boolean = false,
+        category: Message.MessageCategory? = null
     ): RealmResults<Conversation>
 
     fun getConversationsSnapshot(unreadAtTop: Boolean): List<Conversation>

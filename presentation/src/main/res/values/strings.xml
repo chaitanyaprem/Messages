@@ -60,6 +60,9 @@
     <string name="main_menu_edit_message">Edit message</string>
     <string name="main_menu_rename_conversation">Rename conversation</string>
     <string name="main_filter_all">All</string>
+    <string name="main_filter_personal">Personal</string>
+    <string name="main_filter_transactional">Transactional</string>
+    <string name="main_filter_promotional">Promotional</string>
     <string name="main_filter_unread">Unread</string>
     <string name="main_syncing">Syncing messages…</string>
     <string name="main_sender_you">You: %s</string>

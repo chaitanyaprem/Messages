@@ -57,7 +57,8 @@ class ConversationRepositoryImpl @Inject constructor(
     override fun getConversations(
         unreadAtTop: Boolean,
         archived: Boolean,
-        onlyUnread: Boolean
+        onlyUnread: Boolean,
+        category: Message.MessageCategory?
     ): RealmResults<Conversation> {
         val sortOrder: MutableList<String> = arrayListOf("pinned", "draft", "lastMessage.date")
         val sortDirections: MutableList<Sort> =
@@ -82,6 +83,9 @@ class ConversationRepositoryImpl @Inject constructor(
             .endGroup()
         if (onlyUnread) {
             query.equalTo("lastMessage.read", false)
+        }
+        if (category != null) {
+            query.equalTo("lastMessage.categoryString", category.toString())
         }
 
         return query

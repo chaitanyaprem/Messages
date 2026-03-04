@@ -107,6 +107,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val filterSelectedIntent by lazy {
         Observable.merge(
             binding.filterAll.clicks().map { MessageCategory.ALL },
+            binding.filterPersonal.clicks().map { MessageCategory.PERSONAL },
+            binding.filterTransactional.clicks().map { MessageCategory.TRANSACTIONAL },
+            binding.filterPromotional.clicks().map { MessageCategory.PROMOTIONAL },
             binding.filterUnread.clicks().map { MessageCategory.UNREAD },
             binding.filterArchived.clicks().map { MessageCategory.ARCHIVED }
         )
@@ -430,6 +433,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         binding.filterAll.isChecked = state.activeChip == MessageCategory.ALL
+        binding.filterPersonal.isChecked = state.activeChip == MessageCategory.PERSONAL
+        binding.filterTransactional.isChecked = state.activeChip == MessageCategory.TRANSACTIONAL
+        binding.filterPromotional.isChecked = state.activeChip == MessageCategory.PROMOTIONAL
         binding.filterUnread.isChecked = state.activeChip == MessageCategory.UNREAD
         binding.filterArchived.isChecked = state.activeChip == MessageCategory.ARCHIVED
 
