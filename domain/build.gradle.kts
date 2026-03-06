@@ -27,9 +27,7 @@ plugins {
 
 android {
     namespace = "org.prauga.messages.domain"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 23

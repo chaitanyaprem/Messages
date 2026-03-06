@@ -25,9 +25,7 @@ plugins {
 
 android {
     namespace = "com.klinker.android.send_message"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 23

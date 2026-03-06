@@ -5,9 +5,7 @@ plugins {
 
 android {
     namespace = "org.prauga.messages.app"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     buildFeatures {
         viewBinding = true
