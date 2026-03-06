@@ -314,7 +314,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         val addContact = when (state.page) {
             is Inbox -> state.page.addContact
-            is Archived -> state.page.page.addContact
+            is Archived -> state.page.addContact
             else -> false
         }
 
