@@ -104,7 +104,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()
     override val queryChangedIntent by lazy { binding.toolbarSearch.textChanges() }
     override val composeIntent by lazy { binding.compose.clicks() }
-    override val filterSelectedIntent by lazy {
+    override val filterSelectedIntent: Observable<MessageCategory> by lazy {
         Observable.merge(
             binding.filterAll.clicks().map { MessageCategory.ALL },
             binding.filterPersonal.clicks().map { MessageCategory.PERSONAL },
@@ -314,7 +314,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         val addContact = when (state.page) {
             is Inbox -> state.page.addContact
-            is Archived -> state.page.addContact
+            is Archived -> state.page.page.addContact
             else -> false
         }
 
