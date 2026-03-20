@@ -105,7 +105,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val queryChangedIntent by lazy { binding.toolbarSearch.textChanges() }
     override val composeIntent by lazy { binding.compose.clicks() }
     override val filterSelectedIntent: Observable<MessageCategory> by lazy {
-        Observable.merge(
+        Observable.mergeArray(
             binding.filterAll.clicks().map { MessageCategory.ALL },
             binding.filterPersonal.clicks().map { MessageCategory.PERSONAL },
             binding.filterTransactional.clicks().map { MessageCategory.TRANSACTIONAL },

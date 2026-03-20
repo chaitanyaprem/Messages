@@ -199,7 +199,7 @@
     <string name="backup_selected_backup_details_title">Varukoopia üksikasjad</string>
     <string name="backup_now">Varunda kohe</string>
     <string name="backup_progress_parsing">Töötlen varukoopiat…</string>
-    <string name="backup_progress_running">%d/%d sõnumit</string>
+    <string name="backup_progress_running" formatted="false">%d/%d sõnumit</string>
     <string name="backup_progress_saving">Salvestan varukoopiat…</string>
     <string name="backup_progress_syncing">Sünkroonin sõnumeid…</string>
     <string name="scheduled_options_title">Ajastatud sõnum</string>

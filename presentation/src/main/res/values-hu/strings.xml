@@ -167,7 +167,7 @@
     <string name="backup_disclaimer">Jelenleg a mentés csak az SMS üzeneteket menti. Az MMS támogatás és az időzített mentések hamarosan jönnek!</string>
     <string name="backup_now">Mentés most</string>
     <string name="backup_progress_parsing">Mentés elemzése…</string>
-    <string name="backup_progress_running">%d/%d üzenet</string>
+    <string name="backup_progress_running" formatted="false">%d/%d üzenet</string>
     <string name="backup_progress_saving">Mentés…</string>
     <string name="backup_progress_syncing">Üzenetek szinkronizálása…</string>
     <string name="backup_progress_finished">Kész!</string>
