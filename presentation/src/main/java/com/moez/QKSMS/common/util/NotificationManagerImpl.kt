@@ -415,45 +415,42 @@ class NotificationManagerImpl @Inject constructor(
             }
             .forEach { notification.addAction(it) }
 
-        // Detect OTP in the latest message and add copy button if found
+        // Detect OTP in the latest message
         val latestMessage = messages.lastOrNull()
-        if (latestMessage != null) {
-            val messageText = latestMessage.getText()
+        val otpResult = latestMessage?.let {
             val resourceProvider = OtpResourceProviderImpl(context)
-            val otpDetector = OtpDetector(resourceProvider)
-            val otpResult = otpDetector.detect(messageText)
+            OtpDetector(resourceProvider).detect(it.getText())
+        }
 
-            if (otpResult.isOtp && otpResult.code != null) {
-                val copyOtpIntent = Intent(context, CopyOtpReceiver::class.java)
-                    .putExtra("otpCode", otpResult.code)
-                val copyOtpPI = PendingIntent.getBroadcast(
-                    context,
-                    threadId.toInt() + 1000,
-                    copyOtpIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                val copyOtpAction = NotificationCompat.Action.Builder(
-                    R.drawable.ic_check_white_24dp,
-                    context.getString(R.string.notification_action_copy_otp, otpResult.code),
-                    copyOtpPI
-                ).build()
+        val isOtp = otpResult?.isOtp == true && otpResult.code != null
 
-                notification.addAction(copyOtpAction)
+        if (isOtp) {
+            // Build a dedicated OTP-style notification
+            showOtpNotification(
+                threadId = threadId,
+                senderName = conversation.getTitle(),
+                messageText = latestMessage!!.getText(),
+                otpCode = otpResult!!.code!!,
+                messageCount = messages.size,
+                messageIds = messages.map { it.id }.toLongArray(),
+                lastMessageDate = conversation.lastMessage?.date ?: System.currentTimeMillis(),
+                contentPI = contentPI,
+                seenPI = seenPI
+            )
+        } else {
+            if (prefs.qkreply.get()) {
+                notification.priority = NotificationCompat.PRIORITY_DEFAULT
+
+                val intent = Intent(context, QkReplyActivity::class.java)
+                    .putExtra("threadId", threadId)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                context.startActivity(intent)
             }
+            val sc = shortcutManager.getShortcut(threadId)
+            notification.setShortcutInfo(sc)
+            notificationManager.notify(threadId.toInt(), notification.build())
         }
-
-        if (prefs.qkreply.get()) {
-            notification.priority = NotificationCompat.PRIORITY_DEFAULT
-
-            val intent = Intent(context, QkReplyActivity::class.java)
-                .putExtra("threadId", threadId)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            context.startActivity(intent)
-        }
-        val sc = shortcutManager.getShortcut(threadId)
-        notification.setShortcutInfo(sc)
-        notificationManager.notify(threadId.toInt(), notification.build())
 
         // Wake screen
         if (prefs.wakeScreen(threadId).get()) {
@@ -535,6 +532,84 @@ class NotificationManagerImpl @Inject constructor(
                 )
 
         notificationManager.notify(threadId.toInt() + 100000, notification.build())
+    }
+
+    /**
+     * Builds and shows a dedicated OTP notification with:
+     * - Prominent OTP code in the title and body
+     * - Only "Copy OTP" and "Delete" actions
+     * - Amber accent color to visually distinguish from regular messages
+     * - Auto-dismisses when the user taps "Copy"
+     */
+    private fun showOtpNotification(
+        threadId: Long,
+        senderName: String,
+        messageText: String,
+        otpCode: String,
+        messageCount: Int,
+        messageIds: LongArray,
+        lastMessageDate: Long,
+        contentPI: PendingIntent?,
+        seenPI: PendingIntent
+    ) {
+        val otpColor = 0xFFFF6D00.toInt() // Deep orange / amber
+
+        // "Copy OTP" action — also sends threadId so receiver can auto-dismiss
+        val copyOtpIntent = Intent(context, CopyOtpReceiver::class.java)
+            .putExtra("otpCode", otpCode)
+            .putExtra("threadId", threadId)
+        val copyOtpPI = PendingIntent.getBroadcast(
+            context,
+            threadId.toInt() + 1000,
+            copyOtpIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val copyAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_check_white_24dp,
+            context.getString(R.string.notification_action_copy_otp, otpCode),
+            copyOtpPI
+        ).build()
+
+        // "Delete" action
+        val deleteIntent = Intent(context, DeleteMessagesReceiver::class.java)
+            .putExtra("threadId", threadId)
+            .putExtra("messageIds", messageIds)
+        val deletePI = PendingIntent.getBroadcast(
+            context,
+            threadId.toInt(),
+            deleteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val deleteAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_delete_white_24dp,
+            context.resources.getStringArray(R.array.notification_actions)[Preferences.NOTIFICATION_ACTION_DELETE],
+            deletePI
+        ).setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE).build()
+
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+            .bigText(messageText)
+            .setSummaryText(context.getString(R.string.notification_otp_code_label, otpCode))
+
+        val notification = NotificationCompat.Builder(context, getChannelIdForNotification(threadId))
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setColor(otpColor)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setAutoCancel(true)
+            .setContentIntent(contentPI)
+            .setDeleteIntent(seenPI)
+            .setContentTitle(context.getString(R.string.notification_otp_title, senderName))
+            .setContentText(context.getString(R.string.notification_otp_code_label, otpCode))
+            .setStyle(bigTextStyle)
+            .setNumber(messageCount)
+            .setWhen(lastMessageDate)
+            .setVibrate(if (prefs.vibration(threadId).get()) VIBRATE_PATTERN else longArrayOf(0))
+            .addAction(copyAction)
+            .addAction(deleteAction)
+
+        val sc = shortcutManager.getShortcut(threadId)
+        notification.setShortcutInfo(sc)
+        notificationManager.notify(threadId.toInt(), notification.build())
     }
 
     private fun getReplyAction(threadId: Long): NotificationCompat.Action {

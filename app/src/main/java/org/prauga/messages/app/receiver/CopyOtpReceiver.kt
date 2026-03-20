@@ -1,5 +1,6 @@
 package org.prauga.messages.app.receiver
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -19,5 +20,13 @@ class CopyOtpReceiver : BroadcastReceiver() {
 
         Toast.makeText(context, context.getString(R.string.otp_copied, otpCode), Toast.LENGTH_SHORT)
             .show()
+
+        // Auto-dismiss the OTP notification after copying
+        val threadId = intent.getLongExtra("threadId", -1L)
+        if (threadId != -1L) {
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(threadId.toInt())
+        }
     }
 }
