@@ -4,6 +4,7 @@
 package org.prauga.messages.interactor
 
 import org.prauga.messages.blocking.BlockingClient
+import org.prauga.messages.categorization.CategorizationEngine
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.model.Conversation
@@ -18,6 +19,7 @@ import io.reactivex.Single
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
@@ -55,6 +57,9 @@ class ReceiveSmsTest {
     private lateinit var contactsRepo: ContactRepository
 
     @Mock
+    private lateinit var categorizationEngine: CategorizationEngine
+
+    @Mock
     private lateinit var message: Message
 
     @Mock
@@ -76,9 +81,11 @@ class ReceiveSmsTest {
         `when`(prefs.blockingManager).thenReturn(blockingManagerPref)
         `when`(dropPref.get()).thenReturn(false)
         `when`(blockingManagerPref.get()).thenReturn(0)
+        `when`(categorizationEngine.categorize(anyString(), anyString())).thenReturn(Message.MessageCategory.UNKNOWN)
         receiveSms = ReceiveSms(
             conversationRepo, blockingClient, prefs, messageRepo,
-            notificationManager, updateBadge, shortcutManager, filterRepo, contactsRepo
+            notificationManager, updateBadge, shortcutManager, filterRepo, contactsRepo,
+            categorizationEngine
         )
     }
 

@@ -60,6 +60,9 @@
     <string name="main_menu_edit_message">Edit message</string>
     <string name="main_menu_rename_conversation">Rename conversation</string>
     <string name="main_filter_all">All</string>
+    <string name="main_filter_personal">Personal</string>
+    <string name="main_filter_transactional">Transactional</string>
+    <string name="main_filter_promotional">Promotional</string>
     <string name="main_filter_unread">Unread</string>
     <string name="main_syncing">Syncing messages…</string>
     <string name="main_sender_you">You: %s</string>
@@ -240,7 +243,7 @@
     <string name="backup_disclaimer">Currently, only SMS is supported by Backup and Restore. MMS support and scheduled backups will be coming soon!</string>
     <string name="backup_now">Backup now</string>
     <string name="backup_progress_parsing">Parsing backup…</string>
-    <string name="backup_progress_running">%d/%d messages</string>
+    <string name="backup_progress_running" formatted="false">%d/%d messages</string>
     <string name="backup_progress_saving">Saving backup…</string>
     <string name="backup_progress_syncing">Syncing messages…</string>
     <string name="backup_progress_finished">Finished!</string>

@@ -27,9 +27,7 @@ plugins {
 
 android {
     namespace = "org.prauga.messages"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "org.prauga.messages"

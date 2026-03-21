@@ -100,17 +100,29 @@ class MainViewModel @Inject constructor(
     )
 ) {
     private var lastArchivedThreadIds = listOf<Long>(0)
-    private fun inboxData(filter: ConversationFilterType) =
+
+    // Map UI-level MessageCategory to domain Message.MessageCategory for repo queries.
+    // ALL / UNREAD / ARCHIVED are handled via other filter params, not as message categories.
+    private fun MessageCategory.toDomainCategory(): org.prauga.messages.model.Message.MessageCategory? = when (this) {
+        MessageCategory.PERSONAL -> org.prauga.messages.model.Message.MessageCategory.PERSONAL
+        MessageCategory.TRANSACTIONAL -> org.prauga.messages.model.Message.MessageCategory.TRANSACTIONAL
+        MessageCategory.PROMOTIONAL -> org.prauga.messages.model.Message.MessageCategory.PROMOTIONAL
+        else -> null
+    }
+
+    private fun inboxData(filter: ConversationFilterType, category: MessageCategory? = null) =
         conversationRepo.getConversations(
             prefs.unreadAtTop.get(),
-            onlyUnread = filter == UNREAD
+            onlyUnread = filter == UNREAD,
+            category = category?.toDomainCategory()
         )
 
-    private fun archivedData(filter: ConversationFilterType) =
+    private fun archivedData(filter: ConversationFilterType, category: MessageCategory? = null) =
         conversationRepo.getConversations(
             prefs.unreadAtTop.get(),
             archived = true,
-            onlyUnread = filter == UNREAD
+            onlyUnread = filter == UNREAD,
+            category = category?.toDomainCategory()
         )
 
     init {
@@ -330,7 +342,28 @@ class MainViewModel @Inject constructor(
                         copy(
                             activeChip = chip,
                             currentFilter = ALL,
-                            page = Inbox(data = inboxData(ALL))
+                            page = Inbox(data = inboxData(ALL, MessageCategory.ALL))
+                        )
+                    }
+                    MessageCategory.PERSONAL -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = ALL,
+                            page = Inbox(data = inboxData(ALL, MessageCategory.PERSONAL))
+                        )
+                    }
+                    MessageCategory.TRANSACTIONAL -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = ALL,
+                            page = Inbox(data = inboxData(ALL, MessageCategory.TRANSACTIONAL))
+                        )
+                    }
+                    MessageCategory.PROMOTIONAL -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = ALL,
+                            page = Inbox(data = inboxData(ALL, MessageCategory.PROMOTIONAL))
                         )
                     }
 

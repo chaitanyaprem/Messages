@@ -104,9 +104,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()
     override val queryChangedIntent by lazy { binding.toolbarSearch.textChanges() }
     override val composeIntent by lazy { binding.compose.clicks() }
-    override val filterSelectedIntent by lazy {
-        Observable.merge(
+    override val filterSelectedIntent: Observable<MessageCategory> by lazy {
+        Observable.mergeArray(
             binding.filterAll.clicks().map { MessageCategory.ALL },
+            binding.filterPersonal.clicks().map { MessageCategory.PERSONAL },
+            binding.filterTransactional.clicks().map { MessageCategory.TRANSACTIONAL },
+            binding.filterPromotional.clicks().map { MessageCategory.PROMOTIONAL },
             binding.filterUnread.clicks().map { MessageCategory.UNREAD },
             binding.filterArchived.clicks().map { MessageCategory.ARCHIVED }
         )
@@ -220,7 +223,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                         -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
                     binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(translationY).setDuration(200)
+                    binding.filterScrollView.animate().translationY(translationY).setDuration(200)
                         .start()
                     binding.recyclerView.animate().translationY(translationY).setDuration(200)
                         .start()
@@ -228,7 +231,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     // Show
                     binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(0f).setDuration(200).start()
+                    binding.filterScrollView.animate().translationY(0f).setDuration(200).start()
                     binding.recyclerView.animate().translationY(0f).setDuration(200).start()
                 }
             }
@@ -303,7 +306,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             binding.empty.setVisible(false)
             binding.searchPill.setVisible(false)
             binding.compose.setVisible(false)
-            binding.filterGroup.setVisible(false)
+            binding.filterScrollView.setVisible(false)
             return
         } else {
             binding.notDefaultSmsView.setVisible(false)
@@ -345,7 +348,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     state.page is Searching
         )
         binding.toolbarTitle.setVisible(true)
-        binding.filterGroup.setVisible(state.page is Inbox || state.page is Archived)
+        binding.filterScrollView.setVisible(state.page is Inbox || state.page is Archived)
 
         binding.toolbar.menu.apply {
             findItem(R.id.select_all)?.isVisible =
@@ -430,6 +433,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         binding.filterAll.isChecked = state.activeChip == MessageCategory.ALL
+        binding.filterPersonal.isChecked = state.activeChip == MessageCategory.PERSONAL
+        binding.filterTransactional.isChecked = state.activeChip == MessageCategory.TRANSACTIONAL
+        binding.filterPromotional.isChecked = state.activeChip == MessageCategory.PROMOTIONAL
         binding.filterUnread.isChecked = state.activeChip == MessageCategory.UNREAD
         binding.filterArchived.isChecked = state.activeChip == MessageCategory.ARCHIVED
 

@@ -62,5 +62,5 @@ data class Archived(
     val selected: Int = 0
 ) : MainPage()
 
-enum class ConversationFilterType { ALL, UNREAD }
-enum class MessageCategory { ALL, UNREAD, ARCHIVED }
+enum class ConversationFilterType { ALL, UNREAD, PERSONAL, TRANSACTIONAL, PROMOTIONAL }
+enum class MessageCategory { ALL, UNREAD, ARCHIVED, PERSONAL, TRANSACTIONAL, PROMOTIONAL }

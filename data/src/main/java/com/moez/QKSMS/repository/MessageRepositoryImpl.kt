@@ -1104,6 +1104,47 @@ open class MessageRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun updateMessageCategory(id: Long, category: Message.MessageCategory) {
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                val message = it.where(Message::class.java).equalTo("id", id).findFirst()
+                message?.categoryString = category.name
+            }
+        }
+    }
+
+    override fun updateMessageCategories(updates: Map<Long, Message.MessageCategory>) {
+        if (updates.isEmpty()) return
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                updates.forEach { (id, category) ->
+                    val message = it.where(Message::class.java).equalTo("id", id).findFirst()
+                    message?.categoryString = category.name
+                }
+            }
+        }
+    }
+
+    override fun getOtpMessageIds(minAgeHours: Int): List<Long> {
+        val cutoff = System.currentTimeMillis() - minAgeHours * 60 * 60 * 1000L
+        return Realm.getDefaultInstance().use { realm ->
+            realm.where(Message::class.java)
+                .equalTo("categoryString", Message.MessageCategory.OTP.name)
+                .lessThan("date", cutoff)
+                .findAll()
+                .map { it.id }
+        }
+    }
+
+    override fun getUncategorizedMessages(): List<Triple<Long, String, String>> {
+        return Realm.getDefaultInstance().use { realm ->
+            realm.where(Message::class.java)
+                .equalTo("categoryString", Message.MessageCategory.UNKNOWN.name)
+                .findAll()
+                .map { Triple(it.id, it.address, it.body) }
+        }
+    }
+
     override fun getOldMessageCounts(maxAgeDays: Int) =
         Realm.getDefaultInstance().use { realm ->
             realm.where(Message::class.java)

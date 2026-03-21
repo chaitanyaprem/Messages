@@ -32,6 +32,17 @@ interface MessageRepository {
 
     fun getMessage(id: Long): Message?
 
+    fun updateMessageCategory(id: Long, category: Message.MessageCategory)
+
+    // Batch update: map of id -> category for multiple messages in one transaction
+    fun updateMessageCategories(updates: Map<Long, Message.MessageCategory>)
+
+    // Returns list of (id, address, body) for messages with no category
+    fun getUncategorizedMessages(): List<Triple<Long, String, String>>
+
+    // Returns ids of OTP messages older than minAgeHours
+    fun getOtpMessageIds(minAgeHours: Int): List<Long>
+
     fun getMessageForPart(id: Long): Message?
 
     fun getLastIncomingMessage(threadId: Long): RealmResults<Message>

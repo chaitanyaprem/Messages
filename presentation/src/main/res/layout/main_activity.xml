@@ -190,17 +190,24 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/filterGroup"
+        <HorizontalScrollView
+            android:id="@+id/filterScrollView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="4dp"
+            android:scrollbars="none"
+            android:fadeScrollbars="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cVTopBar2"
+            app:layout_constraintTop_toBottomOf="@id/cVTopBar2">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/filterGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:selectionRequired="true"
             app:singleLine="true"
             app:singleSelection="true">
@@ -211,6 +218,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/main_filter_all"
+                android:textColor="@color/filter_chip_text"
+                app:chipBackgroundColor="@color/filter_chip_background"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeColor="@color/md_theme_outline"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filterPersonal"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_filter_personal"
+                android:textColor="@color/filter_chip_text"
+                app:chipBackgroundColor="@color/filter_chip_background"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeColor="@color/md_theme_outline"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filterTransactional"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_filter_transactional"
+                android:textColor="@color/filter_chip_text"
+                app:chipBackgroundColor="@color/filter_chip_background"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeColor="@color/md_theme_outline"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filterPromotional"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_filter_promotional"
                 android:textColor="@color/filter_chip_text"
                 app:chipBackgroundColor="@color/filter_chip_background"
                 app:chipCornerRadius="18dp"
@@ -243,6 +286,8 @@
 
         </com.google.android.material.chip.ChipGroup>
 
+        </HorizontalScrollView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -253,7 +298,7 @@
             android:paddingBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/filterGroup"
+            app:layout_constraintTop_toBottomOf="@id/filterScrollView"
             tools:listitem="@layout/conversation_list_item" />
 
         <com.google.android.material.card.MaterialCardView
