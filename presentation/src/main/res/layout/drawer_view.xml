@@ -63,6 +63,21 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/financial"
+            style="@style/DrawerRow">
+
+            <ImageView
+                style="@style/DrawerIcon"
+                android:src="@drawable/ic_star_black_24dp"
+                android:tint="?android:attr/textColorSecondary" />
+
+            <org.prauga.messages.common.widget.QkTextView
+                style="@style/DrawerText"
+                android:text="@string/drawer_financial" />
+
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

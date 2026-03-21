@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:foreground="?attr/selectableItemBackground">
+
+    <!-- Type indicator dot -->
+    <View
+        android:id="@+id/typeDot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/rounded_rectangle_2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/merchant"
+        app:layout_constraintBottom_toBottomOf="@id/merchant"
+        tools:backgroundTint="#E53935" />
+
+    <!-- Merchant name -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/merchant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?android:attr/textColorPrimary"
+        app:textSize="primary"
+        app:layout_constraintStart_toEndOf="@id/typeDot"
+        app:layout_constraintEnd_toStartOf="@id/amount"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Amazon" />
+
+    <!-- Account -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?android:attr/textColorSecondary"
+        app:textSize="tertiary"
+        app:layout_constraintStart_toEndOf="@id/typeDot"
+        app:layout_constraintEnd_toStartOf="@id/amount"
+        app:layout_constraintTop_toBottomOf="@id/merchant"
+        tools:text="••••1234" />
+
+    <!-- Amount -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        app:textSize="primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/merchant"
+        tools:text="₹1,234.00"
+        tools:textColor="#E53935" />
+
+    <!-- Date -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:textSize="tertiary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/amount"
+        tools:text="21 Mar" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

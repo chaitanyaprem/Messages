@@ -444,6 +444,7 @@ class MainViewModel @Inject constructor(
                         else -> newState { copy(hasError = true) }
                     }
 
+                    NavItem.FINANCIAL -> navigator.showFinancial()
                     NavItem.BACKUP -> navigator.showBackup()
                     NavItem.SCHEDULED -> navigator.showScheduled(null)
                     NavItem.BLOCKING -> navigator.showBlockedConversations()

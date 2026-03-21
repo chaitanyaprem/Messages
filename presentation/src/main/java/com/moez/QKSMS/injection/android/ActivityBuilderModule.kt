@@ -21,6 +21,8 @@ package org.prauga.messages.injection.android
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.prauga.messages.feature.backup.BackupActivity
+import org.prauga.messages.feature.financial.FinancialActivity
+import org.prauga.messages.feature.financial.FinancialActivityModule
 import org.prauga.messages.feature.blocking.BlockingActivity
 import org.prauga.messages.feature.compose.ComposeActivity
 import org.prauga.messages.feature.compose.ComposeActivityModule
@@ -92,5 +94,9 @@ abstract class ActivityBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [])
     abstract fun bindBlockingActivity(): BlockingActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [FinancialActivityModule::class])
+    abstract fun bindFinancialActivity(): FinancialActivity
 
 }

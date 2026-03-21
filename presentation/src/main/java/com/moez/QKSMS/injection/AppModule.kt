@@ -227,4 +227,7 @@ class AppModule(private var application: Application) {
     // worker factory
     @Provides
     fun provideWorkerFactory(workerFactory: InjectionWorkerFactory): WorkerFactory = workerFactory
+
+    @Provides
+    fun provideFinancialRepository(repository: org.prauga.messages.repository.FinancialRepositoryImpl): org.prauga.messages.repository.FinancialRepository = repository
 }

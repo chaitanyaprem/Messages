@@ -162,6 +162,10 @@ class Navigator @Inject constructor(
         startActivity(intent)
     }
 
+    fun showFinancial() {
+        startActivity(Intent(context, org.prauga.messages.feature.financial.FinancialActivity::class.java))
+    }
+
     fun showBackup() {
         startActivity(Intent(context, BackupActivity::class.java))
     }

@@ -89,6 +89,12 @@
 
     <string name="drawer_inbox">Inbox</string>
     <string name="drawer_archived">Archived</string>
+    <string name="drawer_financial">Finance</string>
+    <string name="financial_title">Finance</string>
+    <string name="financial_debits">Debits</string>
+    <string name="financial_credits">Credits</string>
+    <string name="financial_recent">Recent Transactions</string>
+    <string name="financial_empty">No transactions found.\nTransactional SMS messages will appear here.</string>
     <string name="drawer_scheduled">Scheduled</string>
     <string name="drawer_blocking">Blocking</string>
     <string name="drawer_more">More</string>
