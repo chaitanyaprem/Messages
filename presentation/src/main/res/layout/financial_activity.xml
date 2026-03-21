@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:background="?android:attr/windowBackground">
 
-    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,95 +16,118 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/financial_title" />
 
-    <!-- Summary card: this month debits vs credits -->
+    <!-- Month navigator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageButton
+            android:id="@+id/prevMonth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+            android:rotation="90"
+            android:contentDescription="Previous month" />
+
+        <org.prauga.messages.common.widget.QkTextView
+            android:id="@+id/monthLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            app:textSize="primary"
+            tools:text="March 2026" />
+
+        <ImageButton
+            android:id="@+id/nextMonth"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+            android:rotation="270"
+            android:contentDescription="Next month" />
+
+    </LinearLayout>
+
+    <!-- Summary card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/summaryCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:padding="16dp">
 
-            <org.prauga.messages.common.widget.QkTextView
-                android:id="@+id/summaryPeriod"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="?android:attr/textColorSecondary"
-                app:textSize="secondary"
-                tools:text="This Month" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <org.prauga.messages.common.widget.QkTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/financial_debits"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:textSize="secondary" />
+
+                <org.prauga.messages.common.widget.QkTextView
+                    android:id="@+id/totalDebits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="#E53935"
+                    android:textStyle="bold"
+                    app:textSize="primary"
+                    tools:text="₹12,345.00" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="?android:attr/divider" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
 
-                <!-- Debits -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <org.prauga.messages.common.widget.QkTextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:text="@string/financial_credits"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:textSize="secondary" />
 
-                    <org.prauga.messages.common.widget.QkTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/financial_debits"
-                        android:textColor="?android:attr/textColorSecondary"
-                        app:textSize="secondary" />
-
-                    <org.prauga.messages.common.widget.QkTextView
-                        android:id="@+id/totalDebits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="#E53935"
-                        android:textStyle="bold"
-                        app:textSize="primary"
-                        tools:text="₹12,345.00" />
-
-                </LinearLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/divider" />
-
-                <!-- Credits -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <org.prauga.messages.common.widget.QkTextView
+                    android:id="@+id/totalCredits"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <org.prauga.messages.common.widget.QkTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/financial_credits"
-                        android:textColor="?android:attr/textColorSecondary"
-                        app:textSize="secondary" />
-
-                    <org.prauga.messages.common.widget.QkTextView
-                        android:id="@+id/totalCredits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="#43A047"
-                        android:textStyle="bold"
-                        app:textSize="primary"
-                        tools:text="₹5,000.00" />
-
-                </LinearLayout>
+                    android:layout_marginTop="4dp"
+                    android:textColor="#43A047"
+                    android:textStyle="bold"
+                    app:textSize="primary"
+                    tools:text="₹5,000.00" />
 
             </LinearLayout>
 
@@ -113,12 +135,33 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Recent transactions label -->
+    <!-- Account chips -->
+    <HorizontalScrollView
+        android:id="@+id/accountScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:fadeScrollbars="true"
+        android:paddingBottom="4dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/accountChipGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            app:singleSelection="true"
+            app:singleLine="true" />
+
+    </HorizontalScrollView>
+
+    <!-- Transactions label -->
     <org.prauga.messages.common.widget.QkTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:text="@string/financial_recent"
         android:textStyle="bold"
         android:textColor="?android:attr/textColorSecondary"

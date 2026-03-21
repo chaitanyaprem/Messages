@@ -3,6 +3,7 @@ package org.prauga.messages.financial
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.prauga.messages.financial.AccountType
 import org.junit.Before
 import org.junit.Test
 
@@ -141,20 +142,48 @@ class TransactionParserTest {
     @Test
     fun `real world HDFC debit SMS`() {
         val body = "Rs.5,000.00 debited from ac XX4321 on 21-Mar-26 to VPA merchant@upi. Avl Bal:Rs.12,345.67"
-        val t = parser.parse(1L, body, 0L)
+        val t = parser.parse(1L, body, 0L, "HDFCBK")
         assertNotNull(t)
         assertEquals(5000.0, t!!.amount, 0.001)
         assertEquals(TransactionType.DEBIT, t.type)
         assertEquals("4321", t.account)
+        assertEquals("HDFC ••••4321", t.accountLabel)
+        assertEquals(AccountType.UPI, t.accountType) // VPA in body
     }
 
     @Test
     fun `real world credit SMS`() {
         val body = "INR 10,000.00 credited to your SBI account XX9876 by NEFT from ABC Corp"
-        val t = parser.parse(1L, body, 0L)
+        val t = parser.parse(1L, body, 0L, "SBIINB")
         assertNotNull(t)
         assertEquals(10000.0, t!!.amount, 0.001)
         assertEquals(TransactionType.CREDIT, t.type)
         assertEquals("9876", t.account)
+        assertEquals("SBI ••••9876", t.accountLabel)
+    }
+
+    @Test
+    fun `detects credit card account type`() {
+        val body = "₹2,000 charged to your credit card ending 5678"
+        val t = parser.parse(1L, body, 0L, "ICICIB")
+        assertNotNull(t)
+        assertEquals(AccountType.CREDIT_CARD, t!!.accountType)
+        assertEquals("5678", t.account)
+    }
+
+    @Test
+    fun `detects UPI account type`() {
+        val body = "₹500 paid via UPI to merchant@okaxis"
+        val t = parser.parse(1L, body, 0L, "GPAY")
+        assertNotNull(t)
+        assertEquals(AccountType.UPI, t!!.accountType)
+    }
+
+    @Test
+    fun `builds account label without last4 when only sender known`() {
+        val body = "₹1,000 debited from your account"
+        val t = parser.parse(1L, body, 0L, "AXISBK")
+        assertNotNull(t)
+        assertEquals("Axis", t!!.accountLabel)
     }
 }

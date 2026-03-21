@@ -25,7 +25,7 @@ class FinancialRepositoryImpl @Inject constructor(
                 .findAll()
             messages.mapNotNull { msg: Message ->
                 try {
-                    transactionParser.parse(msg.id, msg.body, msg.date)
+                    transactionParser.parse(msg.id, msg.body, msg.date, msg.address)
                 } catch (e: Exception) {
                     Timber.w(e, "Failed to parse message ${msg.id}")
                     null

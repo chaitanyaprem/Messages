@@ -95,6 +95,7 @@
     <string name="financial_credits">Credits</string>
     <string name="financial_recent">Recent Transactions</string>
     <string name="financial_empty">No transactions found.\nTransactional SMS messages will appear here.</string>
+    <string name="financial_all_accounts">All</string>
     <string name="drawer_scheduled">Scheduled</string>
     <string name="drawer_blocking">Blocking</string>
     <string name="drawer_more">More</string>
