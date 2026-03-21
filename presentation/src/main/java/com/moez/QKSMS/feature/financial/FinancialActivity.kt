@@ -1,20 +1,27 @@
 package org.prauga.messages.feature.financial
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.chip.Chip
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.widget.QkTextView
 import org.prauga.messages.databinding.FinancialActivityBinding
+import org.prauga.messages.financial.Transaction
+import org.prauga.messages.financial.TransactionType
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -24,11 +31,11 @@ class FinancialActivity : QkThemedActivity<FinancialActivityBinding>(FinancialAc
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: FinancialViewModel
-    private val adapter = FinancialTransactionAdapter()
-    private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+
     private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault()).apply {
-        minimumFractionDigits = 2; maximumFractionDigits = 2
+        minimumFractionDigits = 0; maximumFractionDigits = 0
     }
+    private val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -38,12 +45,16 @@ class FinancialActivity : QkThemedActivity<FinancialActivityBinding>(FinancialAc
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.financial_title)
 
-        binding.transactionList.adapter = adapter
-
         viewModel = ViewModelProvider(this, viewModelFactory)[FinancialViewModel::class.java]
 
-        binding.prevMonth.setOnClickListener { viewModel.previousMonth() }
-        binding.nextMonth.setOnClickListener { viewModel.nextMonth() }
+        // Cashiro deep link
+        binding.cashiroCard.setOnClickListener {
+            val intent = packageManager.getLaunchIntentForPackage("com.ritesh.cashiro")
+                ?: Intent(Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse("https://github.com/chaitanyaprem/Cashiro")
+                }
+            startActivity(intent)
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -53,56 +64,78 @@ class FinancialActivity : QkThemedActivity<FinancialActivityBinding>(FinancialAc
     }
 
     private fun render(state: FinancialState) {
-        // Month label
-        binding.monthLabel.text = monthFormat.format(state.selectedMonth.time)
+        if (state.loading) return
 
-        // Disable next if already current month
-        val now = java.util.Calendar.getInstance()
-        binding.nextMonth.isEnabled = state.selectedMonth.get(java.util.Calendar.YEAR) < now.get(java.util.Calendar.YEAR) ||
-                state.selectedMonth.get(java.util.Calendar.MONTH) < now.get(java.util.Calendar.MONTH)
-        binding.nextMonth.alpha = if (binding.nextMonth.isEnabled) 1f else 0.3f
+        binding.monthLabel.text = state.monthLabel
 
-        // Summary
+        val hasData = state.totalDebits > 0 || state.totalCredits > 0
+        binding.emptyState.isVisible = !hasData
+
         binding.totalDebits.text = "₹${numberFormat.format(state.totalDebits)}"
         binding.totalCredits.text = "₹${numberFormat.format(state.totalCredits)}"
 
-        // Account chips — rebuild only when groups change
-        val chipGroup = binding.accountChipGroup
-        if (chipGroup.childCount - 1 != state.accountGroups.size) {
-            chipGroup.removeAllViews()
-
-            // "All" chip
-            val allChip = Chip(this).apply {
-                text = "All"
-                isCheckable = true
-                isChecked = state.selectedAccount == null
-                setOnClickListener { viewModel.selectAccount(null) }
-            }
-            chipGroup.addView(allChip)
-
-            state.accountGroups.forEach { group ->
-                val chip = Chip(this).apply {
-                    text = "${group.label} (${group.transactionCount})"
-                    isCheckable = true
-                    isChecked = state.selectedAccount == group.label
-                    setOnClickListener { viewModel.selectAccount(group.label) }
-                }
-                chipGroup.addView(chip)
-            }
+        // Top merchants
+        binding.merchantsList.removeAllViews()
+        if (state.topMerchants.isEmpty()) {
+            binding.merchantsCard.isVisible = false
         } else {
-            // Just update checked state
-            (chipGroup.getChildAt(0) as? Chip)?.isChecked = state.selectedAccount == null
-            state.accountGroups.forEachIndexed { i, group ->
-                (chipGroup.getChildAt(i + 1) as? Chip)?.isChecked = state.selectedAccount == group.label
+            binding.merchantsCard.isVisible = true
+            state.topMerchants.forEachIndexed { index, merchant ->
+                val row = layoutInflater.inflate(
+                    R.layout.financial_transaction_item, binding.merchantsList, false
+                )
+                row.findViewById<QkTextView>(R.id.merchant).text =
+                    merchant.name.replaceFirstChar { it.uppercase() }
+                row.findViewById<QkTextView>(R.id.account).text =
+                    "${merchant.count} transaction${if (merchant.count > 1) "s" else ""}"
+                row.findViewById<QkTextView>(R.id.amount).apply {
+                    text = "₹${numberFormat.format(merchant.amount)}"
+                    setTextColor(Color.parseColor("#E53935"))
+                }
+                row.findViewById<View>(R.id.typeDot).backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#E53935"))
+                row.findViewById<QkTextView>(R.id.date).text = ""
+                // Hide divider on last item
+                if (index == state.topMerchants.lastIndex) {
+                    row.findViewById<View?>(R.id.date)?.visibility = View.GONE
+                }
+                binding.merchantsList.addView(row)
             }
         }
 
-        binding.accountScrollView.isVisible = state.accountGroups.isNotEmpty()
+        // Recent transactions
+        binding.recentList.removeAllViews()
+        state.recentTransactions.forEach { txn ->
+            binding.recentList.addView(buildTransactionRow(txn))
+        }
+    }
 
-        // Transactions
-        adapter.submitList(state.filteredTransactions)
-        binding.transactionList.isVisible = state.filteredTransactions.isNotEmpty() && !state.loading
-        binding.emptyState.isVisible = state.filteredTransactions.isEmpty() && !state.loading
+    private fun buildTransactionRow(txn: Transaction): View {
+        val row = layoutInflater.inflate(
+            R.layout.financial_transaction_item, null, false
+        )
+        val isDebit = txn.type == TransactionType.DEBIT
+        val isCredit = txn.type == TransactionType.CREDIT
+        val color = when {
+            isDebit -> Color.parseColor("#E53935")
+            isCredit -> Color.parseColor("#43A047")
+            else -> Color.GRAY
+        }
+        row.findViewById<View>(R.id.typeDot).backgroundTintList =
+            android.content.res.ColorStateList.valueOf(color)
+        row.findViewById<QkTextView>(R.id.merchant).text =
+            txn.merchant?.replaceFirstChar { it.uppercase() } ?: "Unknown"
+        row.findViewById<QkTextView>(R.id.account).apply {
+            text = txn.accountLabel ?: ""
+            isVisible = txn.accountLabel != null
+        }
+        val prefix = when { isDebit -> "−₹"; isCredit -> "+₹"; else -> "₹" }
+        row.findViewById<QkTextView>(R.id.amount).apply {
+            text = "$prefix${numberFormat.format(txn.amount)}"
+            setTextColor(color)
+        }
+        row.findViewById<QkTextView>(R.id.date).text = dateFormat.format(Date(txn.date))
+        return row
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

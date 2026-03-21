@@ -16,178 +16,220 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/financial_title" />
 
-    <!-- Month navigator -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
-
-        <ImageButton
-            android:id="@+id/prevMonth"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-            android:rotation="90"
-            android:contentDescription="Previous month" />
-
-        <org.prauga.messages.common.widget.QkTextView
-            android:id="@+id/monthLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textStyle="bold"
-            app:textSize="primary"
-            tools:text="March 2026" />
-
-        <ImageButton
-            android:id="@+id/nextMonth"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-            android:rotation="270"
-            android:contentDescription="Next month" />
-
-    </LinearLayout>
-
-    <!-- Summary card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/summaryCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="16dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <!-- Month label -->
+            <org.prauga.messages.common.widget.QkTextView
+                android:id="@+id/monthLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:layout_marginBottom="12dp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorSecondary"
+                app:textSize="secondary"
+                tools:text="March 2026" />
 
-                <org.prauga.messages.common.widget.QkTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/financial_debits"
-                    android:textColor="?android:attr/textColorSecondary"
-                    app:textSize="secondary" />
-
-                <org.prauga.messages.common.widget.QkTextView
-                    android:id="@+id/totalDebits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="#E53935"
-                    android:textStyle="bold"
-                    app:textSize="primary"
-                    tools:text="₹12,345.00" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="?android:attr/divider" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <!-- Summary card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp">
 
-                <org.prauga.messages.common.widget.QkTextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/financial_credits"
-                    android:textColor="?android:attr/textColorSecondary"
-                    app:textSize="secondary" />
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
-                <org.prauga.messages.common.widget.QkTextView
-                    android:id="@+id/totalCredits"
-                    android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/financial_debits"
+                            android:textColor="?android:attr/textColorSecondary"
+                            app:textSize="secondary" />
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:id="@+id/totalDebits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textColor="#E53935"
+                            android:textStyle="bold"
+                            app:textSize="primary"
+                            tools:text="₹12,345" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="?android:attr/divider" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/financial_credits"
+                            android:textColor="?android:attr/textColorSecondary"
+                            app:textSize="secondary" />
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:id="@+id/totalCredits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textColor="#43A047"
+                            android:textStyle="bold"
+                            app:textSize="primary"
+                            tools:text="₹5,000" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Top merchants -->
+            <org.prauga.messages.common.widget.QkTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/financial_top_merchants"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorSecondary"
+                app:textSize="secondary" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/merchantsCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:id="@+id/merchantsList"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="#43A047"
-                    android:textStyle="bold"
-                    app:textSize="primary"
-                    tools:text="₹5,000.00" />
+                    android:orientation="vertical"
+                    android:padding="8dp" />
 
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recent transactions -->
+            <org.prauga.messages.common.widget.QkTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/financial_recent"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorSecondary"
+                app:textSize="secondary" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:id="@+id/recentList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Cashiro CTA -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cashiroCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/financial_cashiro_title"
+                            android:textStyle="bold"
+                            app:textSize="primary" />
+
+                        <org.prauga.messages.common.widget.QkTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/financial_cashiro_subtitle"
+                            android:textColor="?android:attr/textColorSecondary"
+                            app:textSize="secondary" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_chevron_right_black_24dp"
+                        android:tint="?android:attr/textColorSecondary" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Empty state -->
+            <org.prauga.messages.common.widget.QkTextView
+                android:id="@+id/emptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:paddingTop="32dp"
+                android:paddingBottom="32dp"
+                android:text="@string/financial_empty"
+                android:textColor="?android:attr/textColorSecondary"
+                app:textSize="secondary" />
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Account chips -->
-    <HorizontalScrollView
-        android:id="@+id/accountScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:fadeScrollbars="true"
-        android:paddingBottom="4dp">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/accountChipGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            app:singleSelection="true"
-            app:singleLine="true" />
-
-    </HorizontalScrollView>
-
-    <!-- Transactions label -->
-    <org.prauga.messages.common.widget.QkTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/financial_recent"
-        android:textStyle="bold"
-        android:textColor="?android:attr/textColorSecondary"
-        app:textSize="secondary" />
-
-    <!-- Transaction list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/transactionList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/financial_transaction_item" />
-
-    <!-- Empty state -->
-    <org.prauga.messages.common.widget.QkTextView
-        android:id="@+id/emptyState"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:visibility="gone"
-        android:text="@string/financial_empty"
-        android:textColor="?android:attr/textColorSecondary"
-        app:textSize="secondary" />
+    </ScrollView>
 
 </LinearLayout>
