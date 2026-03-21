@@ -58,7 +58,7 @@ open class Message : RealmObject() {
     var category: MessageCategory
         get() = MessageCategory.valueOf(categoryString)
         set(value) {
-            categoryString = value.toString()
+            categoryString = value.name
         }
 
     // SMS only

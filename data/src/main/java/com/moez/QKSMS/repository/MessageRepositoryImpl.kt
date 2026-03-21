@@ -1108,7 +1108,7 @@ open class MessageRepositoryImpl @Inject constructor(
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
                 val message = it.where(Message::class.java).equalTo("id", id).findFirst()
-                message?.category = category
+                message?.categoryString = category.name
             }
         }
     }
@@ -1119,7 +1119,7 @@ open class MessageRepositoryImpl @Inject constructor(
             realm.executeTransaction {
                 updates.forEach { (id, category) ->
                     val message = it.where(Message::class.java).equalTo("id", id).findFirst()
-                    message?.category = category
+                    message?.categoryString = category.name
                 }
             }
         }
