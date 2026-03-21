@@ -34,6 +34,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -82,6 +83,9 @@ class QKApplication : Application(), HasAndroidInjector {
     @Inject
     lateinit var workerFactory: WorkerFactory
 
+    @Inject
+    lateinit var backfillMessageCategories: org.prauga.messages.interactor.BackfillMessageCategories
+
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycle()
@@ -106,10 +110,14 @@ class QKApplication : Application(), HasAndroidInjector {
 
         qkMigration.performMigration()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        val bgExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Timber.e(throwable, "Unhandled exception in background startup coroutine")
+        }
+        GlobalScope.launch(Dispatchers.IO + bgExceptionHandler) {
             referralManager.trackReferrer()
             billingManager.checkForPurchases()
             billingManager.queryProducts()
+            backfillMessageCategories.execute()
         }
 
         nightModeManager.updateCurrentTheme()

@@ -26,10 +26,15 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -586,9 +591,31 @@ class NotificationManagerImpl @Inject constructor(
             deletePI
         ).setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE).build()
 
+        // Build a spannable for the OTP code: bold + 1.4x larger
+        val codeLabel = context.getString(R.string.notification_otp_code_label, otpCode)
+        val styledCode = SpannableString(codeLabel).apply {
+            val codeStart = codeLabel.indexOf(otpCode)
+            if (codeStart >= 0) {
+                val codeEnd = codeStart + otpCode.length
+                setSpan(StyleSpan(Typeface.BOLD), codeStart, codeEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                setSpan(RelativeSizeSpan(1.4f), codeStart, codeEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+
+        // BigText: full message + prominently styled OTP code on a new line
+        val bigText = SpannableString("$messageText\n\n$codeLabel").apply {
+            val offset = messageText.length + 2  // skip the \n\n
+            val codeStart = offset + codeLabel.indexOf(otpCode)
+            if (codeStart >= offset) {
+                val codeEnd = codeStart + otpCode.length
+                setSpan(StyleSpan(Typeface.BOLD), codeStart, codeEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                setSpan(RelativeSizeSpan(1.6f), codeStart, codeEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+
         val bigTextStyle = NotificationCompat.BigTextStyle()
-            .bigText(messageText)
-            .setSummaryText(context.getString(R.string.notification_otp_code_label, otpCode))
+            .bigText(bigText)
+            .setSummaryText(senderName)
 
         val notification = NotificationCompat.Builder(context, getChannelIdForNotification(threadId))
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -599,7 +626,7 @@ class NotificationManagerImpl @Inject constructor(
             .setContentIntent(contentPI)
             .setDeleteIntent(seenPI)
             .setContentTitle(context.getString(R.string.notification_otp_title, senderName))
-            .setContentText(context.getString(R.string.notification_otp_code_label, otpCode))
+            .setContentText(styledCode)
             .setStyle(bigTextStyle)
             .setNumber(messageCount)
             .setWhen(lastMessageDate)

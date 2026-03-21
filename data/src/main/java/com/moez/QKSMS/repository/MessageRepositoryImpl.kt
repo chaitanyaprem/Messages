@@ -1113,6 +1113,27 @@ open class MessageRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun updateMessageCategories(updates: Map<Long, Message.MessageCategory>) {
+        if (updates.isEmpty()) return
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                updates.forEach { (id, category) ->
+                    val message = it.where(Message::class.java).equalTo("id", id).findFirst()
+                    message?.category = category
+                }
+            }
+        }
+    }
+
+    override fun getUncategorizedMessages(): List<Triple<Long, String, String>> {
+        return Realm.getDefaultInstance().use { realm ->
+            realm.where(Message::class.java)
+                .equalTo("categoryString", Message.MessageCategory.UNKNOWN.name)
+                .findAll()
+                .map { Triple(it.id, it.address, it.body) }
+        }
+    }
+
     override fun getOldMessageCounts(maxAgeDays: Int) =
         Realm.getDefaultInstance().use { realm ->
             realm.where(Message::class.java)

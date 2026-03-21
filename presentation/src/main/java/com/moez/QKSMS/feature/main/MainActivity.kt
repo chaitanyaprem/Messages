@@ -223,7 +223,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                         -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
                     binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(translationY).setDuration(200)
+                    binding.filterScrollView.animate().translationY(translationY).setDuration(200)
                         .start()
                     binding.recyclerView.animate().translationY(translationY).setDuration(200)
                         .start()
@@ -231,7 +231,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     // Show
                     binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(0f).setDuration(200).start()
+                    binding.filterScrollView.animate().translationY(0f).setDuration(200).start()
                     binding.recyclerView.animate().translationY(0f).setDuration(200).start()
                 }
             }
@@ -306,7 +306,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             binding.empty.setVisible(false)
             binding.searchPill.setVisible(false)
             binding.compose.setVisible(false)
-            binding.filterGroup.setVisible(false)
+            binding.filterScrollView.setVisible(false)
             return
         } else {
             binding.notDefaultSmsView.setVisible(false)
@@ -348,7 +348,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     state.page is Searching
         )
         binding.toolbarTitle.setVisible(true)
-        binding.filterGroup.setVisible(state.page is Inbox || state.page is Archived)
+        binding.filterScrollView.setVisible(state.page is Inbox || state.page is Archived)
 
         binding.toolbar.menu.apply {
             findItem(R.id.select_all)?.isVisible =
