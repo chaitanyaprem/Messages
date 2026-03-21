@@ -86,6 +86,9 @@ class QKApplication : Application(), HasAndroidInjector {
     @Inject
     lateinit var backfillMessageCategories: org.prauga.messages.interactor.BackfillMessageCategories
 
+    @Inject
+    lateinit var deleteOldOtpMessages: org.prauga.messages.interactor.DeleteOldOtpMessages
+
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycle()
@@ -118,6 +121,7 @@ class QKApplication : Application(), HasAndroidInjector {
             billingManager.checkForPurchases()
             billingManager.queryProducts()
             backfillMessageCategories.execute()
+            deleteOldOtpMessages.execute()
         }
 
         nightModeManager.updateCurrentTheme()

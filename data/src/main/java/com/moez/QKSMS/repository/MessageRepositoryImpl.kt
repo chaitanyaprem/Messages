@@ -1125,6 +1125,17 @@ open class MessageRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getOtpMessageIds(minAgeHours: Int): List<Long> {
+        val cutoff = System.currentTimeMillis() - minAgeHours * 60 * 60 * 1000L
+        return Realm.getDefaultInstance().use { realm ->
+            realm.where(Message::class.java)
+                .equalTo("categoryString", Message.MessageCategory.OTP.name)
+                .lessThan("date", cutoff)
+                .findAll()
+                .map { it.id }
+        }
+    }
+
     override fun getUncategorizedMessages(): List<Triple<Long, String, String>> {
         return Realm.getDefaultInstance().use { realm ->
             realm.where(Message::class.java)

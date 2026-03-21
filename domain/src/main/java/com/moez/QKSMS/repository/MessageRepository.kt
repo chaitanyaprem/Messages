@@ -40,6 +40,9 @@ interface MessageRepository {
     // Returns list of (id, address, body) for messages with no category
     fun getUncategorizedMessages(): List<Triple<Long, String, String>>
 
+    // Returns ids of OTP messages older than minAgeHours
+    fun getOtpMessageIds(minAgeHours: Int): List<Long>
+
     fun getMessageForPart(id: Long): Message?
 
     fun getLastIncomingMessage(threadId: Long): RealmResults<Message>
